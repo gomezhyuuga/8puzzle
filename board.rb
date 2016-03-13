@@ -2,13 +2,22 @@
 class Board
   attr_reader :cells
   def initialize
+    @cells = []
     cells = (1..8).to_a
     cells << " "
-    @cells = cells.shuffle!
+    cells.shuffle!
+    cells.each_slice(3) { |row| @cells << row }
   end
 
+  def all_cells
+    cells = []
+    @cells.each do |row|
+      row.each { |num| cells << num }
+    end
+    cells
+  end
   def to_s
-    @cells.each_slice(3) { |row| puts row.join "|" }
+    @cells.map { |row| row.join "|" }.join "\n"
   end
 end
 
