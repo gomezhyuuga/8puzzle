@@ -8,13 +8,8 @@ class Board
     cells.shuffle!
     cells.each_slice(3) { |row| @cells << row }
   end
-
   def all_cells
-    cells = []
-    @cells.each do |row|
-      row.each { |num| cells << num }
-    end
-    cells
+    @cells.flatten
   end
   def to_s
     @cells.map { |row| row.join "|" }.join "\n"
