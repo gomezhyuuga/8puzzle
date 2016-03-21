@@ -28,7 +28,7 @@ class Board
     false
   end
 
-  def array_of_moves
+  def possible_moves
     row, col = self.blank_position
     moves = []
     self.possible_direction_moves.each do |move|
@@ -39,7 +39,7 @@ class Board
       when :right then moves << [row, col + 1]
       end
     end
-    moves
+    moves.sort
   end
 
   def possible_direction_moves
