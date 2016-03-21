@@ -1,0 +1,15 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    highline (1.7.8)
+    minitest (5.8.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  highline
+  minitest
+
+BUNDLED WITH
+   1.11.2
