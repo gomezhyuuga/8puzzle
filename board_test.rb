@@ -116,36 +116,38 @@ class BoardTest < MiniTest::Unit::TestCase
     [1, 3, 5, 7].each { |num| assert @board.can_move?(num), "Moving #{num}" }
   end
 
-  #def check_move(board, number)
-    #blank_pos = board.blank_position
-    #assert_equal blank_pos, board.position_of(number)
-  #end
-  #def test_moves
-    #@board.cells = mock_cells
+  def check_move(board, number)
+    blank_pos = board.blank_position
+    assert_equal blank_pos, board.position_of(number)
+  end
+  def test_move
+    @board.cells = mock_cells
 
+    [1, 2, 5, 4, 7, 8].each do |cell|
+      b_pos = @board.blank_position
+      n_pos = @board.position_of(cell)
+      @board.move(cell)
+      assert_equal b_pos, @board.position_of(cell)
+      assert_equal n_pos, @board.blank_position
+    end
     #@board.move(1) # | |1|2| => |1| |2|
-    #check_move(@board, 1)
     #@board.move(2) # |1| |2| => |1|2| |
-    #check_move(@board, 2)
-    ## |1|2| | ==> |1|2|5|
-    ## |3|4|5| ==> |3|4| |
+    # |1|2| | ==> |1|2|5|
+    # |3|4|5| ==> |3|4| |
     #@board.move(5)
-    #check_move(@board, 5)
-    ## |1|2|5| ==> |1|2|5|
-    ## |3|4| | ==> |3| |4|
+    # |1|2|5| ==> |1|2|5|
+    # |3|4| | ==> |3| |4|
     #@board.move(4)
-    #check_move(@board, 4)
-    ## |1|2|5| ==> |1|2|5|
-    ## |3| |4| ==> |3|7|4|
-    ## |6|7|8| ==> |6| |8|
+    # |1|2|5| ==> |1|2|5|
+    # |3| |4| ==> |3|7|4|
+    # |6|7|8| ==> |6| |8|
     #@board.move(7)
-    #check_move(@board, 7)
-    ## |1|2|5| ==> |1|2|5|
-    ## |3|7|4| ==> |3|7|4|
-    ## |6| |8| ==> |6|8| |
+    # |1|2|5| ==> |1|2|5|
+    # |3|7|4| ==> |3|7|4|
+    # |6| |8| ==> |6|8| |
     #@board.move(8)
-    #check_move(@board, 8)
-  #end
+
+  end
     def mock_moves
       %i[up down left right].to_set
     end

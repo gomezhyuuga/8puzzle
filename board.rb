@@ -21,6 +21,14 @@ class Board
   end
 
   def move(number)
+    raise ArgumentError.new("Can't move that cell") unless self.can_move?(number)
+
+    b_row, b_col = self.blank_position
+    c_row, c_col  = self.position_of(number)
+    @cells[b_row][b_col] = number
+    @cells[c_row][c_col] = " "
+
+    [b_row, b_col]
   end
 
   def can_move?(number)
