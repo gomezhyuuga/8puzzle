@@ -147,6 +147,15 @@ class BoardTest < MiniTest::Unit::TestCase
     # |6| |8| ==> |6|8| |
     #@board.move(8)
 
+    # Can't move 2, 4-8
+    @board.cells = mock_cells
+    cant_move = [2] + (4..8).to_a
+    cant_move.each do |cell|
+      exp = assert_raises(ArgumentError) do
+        @board.move(cell)
+      end
+      assert_equal "Can't move that cell", exp.message
+    end
   end
     def mock_moves
       %i[up down left right].to_set
