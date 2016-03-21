@@ -94,6 +94,14 @@ class BoardTest < MiniTest::Unit::TestCase
 
   def test_can_move?
     @board.cells = mock_cells
+
+    # With incorrect positions
+    assert !@board.can_move?(9), "Can't move a non existent cell"
+    assert !@board.can_move?(" "), 'Can not move the blank space'
+    assert !@board.can_move?(0), "Can't move a non existent cell"
+    assert !@board.can_move?("sad"), "Can't move a non existent cell"
+
+
     # Initially can only move 2 and 3
     cant_move = (1..8).to_a - [1, 3]
     cant_move.each { |num| assert !@board.can_move?(num), "Moving #{num}" }

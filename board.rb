@@ -21,6 +21,7 @@ class Board
   end
 
   def move(number)
+    number = number.to_i
     raise ArgumentError.new("Can't move that cell") unless self.can_move?(number)
 
     b_row, b_col = self.blank_position
@@ -32,6 +33,8 @@ class Board
   end
 
   def can_move?(number)
+    number = number.to_i
+    return false if number > 8 || number < 1
     position = self.position_of(number)
     moves    = self.possible_moves
     moves.index(position) ? true : false
