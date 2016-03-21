@@ -20,7 +20,29 @@ class Board
     self.position_of " "
   end
 
-  def possible_moves
+  def move(number)
+  end
+
+  def can_move?(number)
+    position = self.position_of(number)
+    false
+  end
+
+  def array_of_moves
+    row, col = self.blank_position
+    moves = []
+    self.possible_direction_moves.each do |move|
+      case move
+      when :up then moves << [row - 1, col]
+      when :down then moves << [row + 1, col]
+      when :left then moves << [row, col - 1]
+      when :right then moves << [row, col + 1]
+      end
+    end
+    moves
+  end
+
+  def possible_direction_moves
     moves = %i[up down left right].to_set
     row, col = self.blank_position
 
