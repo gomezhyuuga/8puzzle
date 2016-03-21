@@ -68,6 +68,11 @@ class Board
     [index / 3, index % 3]
   end
 
+  def won?
+    winner_cells = (1..8).to_a << " "
+    self.all_cells == winner_cells
+  end
+
   def to_s
     @cells.map { |row| row.join "|" }.join "\n"
   end

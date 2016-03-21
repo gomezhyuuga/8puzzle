@@ -157,6 +157,17 @@ class BoardTest < MiniTest::Unit::TestCase
       assert_equal "Can't move that cell", exp.message
     end
   end
+
+  def test_won?
+    @board.cells = mock_cells
+    assert !@board.won?, 'Should not have won'
+    @board.cells = [[1, 2, 3],
+                    [4, 5, 6],
+                    [7, 8, " "]]
+    assert @board.won?, 'Shoud have won'
+  end
+
+  # HELPER METHODS
     def mock_moves
       %i[up down left right].to_set
     end
