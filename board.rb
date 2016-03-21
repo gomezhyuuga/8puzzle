@@ -17,9 +17,7 @@ class Board
   end
 
   def blank_position
-    index = self.all_cells.index " "
-
-    [index / 3, index % 3]
+    self.position_of " "
   end
 
   def possible_moves
@@ -32,6 +30,11 @@ class Board
     moves.delete(:down) if row == 2
 
     moves
+  end
+  def position_of(number)
+    number = " " if number == :blank
+    index = self.all_cells.index number
+    [index / 3, index % 3]
   end
 
   def to_s

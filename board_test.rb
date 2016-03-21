@@ -72,6 +72,49 @@ class BoardTest < MiniTest::Unit::TestCase
     @board.cells = self.mock_cells_blank_at row: 2, col: 2
     assert_equal self.mock_moves.subtract([:down, :right]), @board.possible_moves
   end
+  def test_position_of
+    @board.cells = mock_cells
+    assert_equal [0, 0], @board.position_of(:blank)
+    assert_equal [0, 1], @board.position_of(1)
+    assert_equal [0, 2], @board.position_of(2)
+    assert_equal [1, 0], @board.position_of(3)
+    assert_equal [1, 1], @board.position_of(4)
+    assert_equal [1, 2], @board.position_of(5)
+    assert_equal [2, 0], @board.position_of(6)
+    assert_equal [2, 1], @board.position_of(7)
+    assert_equal [2, 2], @board.position_of(8)
+  end
+
+  def check_move(board, number)
+    blank_pos = board.blank_position
+    assert_equal blank_pos, board.position_of(number)
+  end
+  def test_moves
+    @board.cells = mock_cells
+
+    @board.move(1) # | |1|2| => |1| |2|
+    check_move(@board, 1)
+    @board.move(2) # |1| |2| => |1|2| |
+    check_move(@board, 2)
+    # |1|2| | ==> |1|2|5|
+    # |3|4|5| ==> |3|4| |
+    @board.move(5)
+    check_move(@board, 5)
+    # |1|2|5| ==> |1|2|5|
+    # |3|4| | ==> |3| |4|
+    @board.move(4)
+    check_move(@board, 4)
+    # |1|2|5| ==> |1|2|5|
+    # |3| |4| ==> |3|7|4|
+    # |6|7|8| ==> |6| |8|
+    @board.move(7)
+    check_move(@board, 7)
+    # |1|2|5| ==> |1|2|5|
+    # |3|7|4| ==> |3|7|4|
+    # |6| |8| ==> |6|8| |
+    @board.move(8)
+    check_move(@board, 8)
+  end
     def mock_moves
       %i[up down left right].to_set
     end
