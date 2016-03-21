@@ -25,7 +25,8 @@ class Board
 
   def can_move?(number)
     position = self.position_of(number)
-    false
+    moves = self.possible_moves
+    moves.index(position) ? true : false
   end
 
   def possible_moves

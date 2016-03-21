@@ -92,12 +92,28 @@ class BoardTest < MiniTest::Unit::TestCase
     assert_equal [2, 2], @board.position_of(8)
   end
 
-  def _test_can_move?
+  def test_can_move?
     @board.cells = mock_cells
     # Initially can only move 2 and 3
     cant_move = (1..8).to_a - [1, 3]
-    cant_move.each { |num| assert !@board.can_move?(num) }
-    [1, 3].each { |num| assert @board.can_move?(num) }
+    cant_move.each { |num| assert !@board.can_move?(num), "Moving #{num}" }
+    [1, 3].each { |num| assert @board.can_move?(num), "Moving #{num}" }
+
+    # |7|1|2|
+    # |3|4|5|
+    # |6| |8|
+    @board.cells = mock_cells_blank_at row: 2, col: 1
+    cant_move = [7, 1, 2, 3, 5]
+    cant_move.each { |num| assert !@board.can_move?(num), "Moving #{num}" }
+    [4, 6, 8].each { |num| assert @board.can_move?(num), "Moving #{num}" }
+
+    # |4|1|2|
+    # |3| |5|
+    # |6|7|8|
+    @board.cells = mock_cells_blank_at row: 1, col: 1
+    cant_move = [4, 2, 6, 8]
+    cant_move.each { |num| assert !@board.can_move?(num), "Moving #{num}" }
+    [1, 3, 5, 7].each { |num| assert @board.can_move?(num), "Moving #{num}" }
   end
 
   #def check_move(board, number)
