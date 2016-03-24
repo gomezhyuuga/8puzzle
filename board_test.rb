@@ -162,7 +162,7 @@ class BoardTest < MiniTest::Unit::TestCase
       exp = assert_raises(ArgumentError) do
         @board.move(cell)
       end
-      assert_equal "Can't move that cell", exp.message
+      assert_equal "Can't move that cell (#{cell})", exp.message
     end
   end
 

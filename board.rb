@@ -4,12 +4,19 @@ require 'set'
 class Board
   attr_accessor :cells
 
-  def initialize
+  def initialize(initial = nil)
     @cells = []
-    cells = (1..8).to_a
-    cells << " "
-    cells.shuffle!
-    cells.each_slice(3) { |row| @cells << row }
+    if initial
+      initial.length.times.each { |i| @cells << [] }
+      initial.each_index do |row|
+        initial[row].each { |n| @cells[row] << n }
+      end
+    else
+      cells = (1..8).to_a
+      cells << " "
+      cells.shuffle!
+      cells.each_slice(3) { |row| @cells << row }
+    end
   end
 
   def all_cells
@@ -22,7 +29,7 @@ class Board
 
   def move(number)
     number = number.to_i
-    raise ArgumentError.new("Can't move that cell") unless self.can_move?(number)
+    raise ArgumentError.new("Can't move that cell (#{number})") unless self.can_move?(number)
 
     b_row, b_col = self.blank_position
     c_row, c_col = self.position_of(number)
@@ -68,6 +75,7 @@ class Board
   def position_of(number)
     number = " " if number == :blank
     index  = self.all_cells.index number
+    #puts "num: #{number} | index: #{index}"
     [index / 3, index % 3]
   end
 
@@ -77,7 +85,7 @@ class Board
   end
 
   def to_s
-    @cells.map { |row| row.join "|" }.join "\n"
+    (@cells.map { |row| row.join "|" }.join "\n") + "\n\n"
   end
 end
 
