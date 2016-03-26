@@ -42,9 +42,8 @@ class Board
   def can_move?(number)
     number = number.to_i
     return false if number > 8 || number < 1
-    position = self.position_of(number)
     moves    = self.possible_moves
-    moves.index(position) ? true : false
+    moves.index(number) ? true : false
   end
 
   def possible_moves
@@ -52,10 +51,10 @@ class Board
     moves    = []
     self.possible_direction_moves.each do |move|
       case move
-      when :up    then moves << [row - 1, col]
-      when :down  then moves << [row + 1, col]
-      when :left  then moves << [row, col - 1]
-      when :right then moves << [row, col + 1]
+      when :up    then moves << @cells[row - 1][col]
+      when :down  then moves << @cells[row + 1][col]
+      when :left  then moves << @cells[row][col - 1]
+      when :right then moves << @cells[row][col + 1]
       end
     end
     moves.sort

@@ -74,10 +74,10 @@ class BoardTest < MiniTest::Unit::TestCase
   end
   def test_possible_moves
     @board.cells = self.mock_cells
-    assert_equal [[0, 1], [1, 0]], @board.possible_moves
+    assert_equal [1, 3], @board.possible_moves
 
     @board.cells = self.mock_cells_blank_at row: 2, col: 2
-    assert_equal [[1, 2], [2, 1]], @board.possible_moves
+    assert_equal [5, 7], @board.possible_moves
   end
   def test_position_of
     @board.cells = mock_cells
