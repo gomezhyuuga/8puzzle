@@ -2,57 +2,127 @@ require 'highline'
 require 'board'
 require 'byebug'
 
-$visited = Set.new
-
-def is_goal?(board)
-  board.won?
+class HumanPlayer
+  def initialize
+    @cli = HighLine.new
+  end
+  def request_move(board = nil)
+    @cli.ask("Choose the number you want to move: ").to_i
+  end
 end
-def succesors(initial_board)
-  states = []
-  (1..8).to_a.each do |num|
-    board = Board.new(initial_board.cells)
-    if board.can_move?(num)
-      board.move(num)
-      #byebug
-      can_add = board.all_cells != initial_board.all_cells
-      can_add &= !$visited.include?(board.all_cells)
-      states << board if can_add
-      #if board.all_cells != initial_board.all_cells
+
+class BFSSearch
+  def initialize
+    @visited = Set.new
+    @counter = 0
+  end
+
+  def is_goal?(board)
+    board.won?
+  end
+  def succesors(board, backtrack=true)
+    states = []
+
+    board.possible_moves.each do |num|
+      b = Board.new(board.cells)
+      b.move(num)
+
+      can_add = true
+      if backtrack
+        can_add = b.all_cells != board.all_cells
+        can_add &= !@visited.include?(b.all_cells)
+      end
+
+      states << b if can_add
     end
+
+    states
   end
-  states
+  def search(state, backtrack = true)
+    queue = []
+
+    loop do
+      break if is_goal?(state)
+
+      @visited.add state.all_cells if backtrack
+      queue.concat(succesors(state))
+      raise "Could not generate states from \n#{state}" if queue.empty?
+
+      state = queue.shift
+      @counter += 1
+    end
+    return { state: state, movements: @counter }
+  end
 end
-def bfs(start_state)
-  queue = []
-  state = start_state
-  counter = 0
+class AIPlayer
+  def initialize(algorithm)
+    @ai = algorithm
+  end
+  def play(board)
+    @ai.search(board)
+  end
+end
 
-  loop do
-    break if is_goal?(state)
+class Game
+  def initialize(player)
+    @board = Board.new [[1,2,3],
+    [4,5,6],
+    [" ",7,8]]
+    #@board = Board.new
+    @player = player
+  end
+  def play
+    movements = 0
+    print_header
 
-    $visited.add state.all_cells
-    queue.concat(succesors(state))
-    raise "Could not generate states" if queue.empty?
+    puts "######## INITIAL STATE ########"
+    puts @board
 
-    state = queue.shift
-    counter += 1
+    if @player.class == HumanPlayer
+      until @board.won?
+        move = @player.request_move(@board)
+        break if move == "q"
+
+        if @board.can_move?(move)
+          @board.move(move)
+          movements += 1
+        else
+          puts "Can't move that place"
+        end
+        puts @board
+      end
+    else
+      r = @player.play(@board)
+      movements = r[:movements]
+      @board = r[:state]
+    end
+
+    puts "######## GAME FINISHED: FINAL STATE ########"
+    puts @board
+    puts "Movements: #{movements}"
   end
 
-  return { state: state, movements: counter }
+  private
+  def print_header
+    header = "######## Welcome ########\n"
+    header += %q(
+  ______   __________                     .__
+
+
+ /  __  \  \______   \__ _________________|  |   ____
+ >      <   |     ___/  |  \___   /\___   /  | _/ __ \
+/   --   \  |    |   |  |  //    /  /    /|  |_\  ___/
+\______  /  |____|   |____//_____ \/_____ \____/\___  >
+       \/                        \/      \/         \/
+    )
+    puts header
+  end
 end
+#begin
+#rescue StandardError => e
+#puts e.message
+#end
 
-CLI = HighLine.new
-def ask_answer
-  CLI.ask "Choose the number you want to move: "
-end
-
-game = Board.new
-puts "###### Initial state ######"
-puts game
-
-result = bfs(game)
-
-puts "###### Final state ######"
-puts result[:state]
-puts "Total of movements: #{result[:movements]}"
-
+game = Game.new(HumanPlayer.new)
+#game = Game.new(AIPlayer.new(BFSSearch.new))
+game.play
