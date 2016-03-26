@@ -15,6 +15,7 @@ class BFSSearch
   def initialize
     @visited = Set.new
     @counter = 0
+    @queue = []
   end
 
   def is_goal?(board)
@@ -38,20 +39,36 @@ class BFSSearch
 
     states
   end
+  def generate_succesors(state)
+    @queue.concat(succesors(state))
+  end
   def search(state, backtrack = true)
-    queue = []
-
     loop do
       break if is_goal?(state)
 
       @visited.add state.all_cells if backtrack
-      queue.concat(succesors(state))
-      raise "Could not generate states from \n#{state}" if queue.empty?
 
-      state = queue.shift
+      generate_succesors(state)
+      raise "Could not generate states from \n#{state}" if @queue.empty?
+
+      state = @queue.shift
+      puts state
       @counter += 1
     end
     return { state: state, movements: @counter }
+  end
+end
+class ASearch < BFSSearch
+  def generate_succesors(state)
+    super
+    @queue.sort_by! { |s| heuristic(s) }
+  end
+  def heuristic(state)
+    cells = state.all_cells
+    misplaced = 0
+    (cells.length - 1).times { |i| misplaced += 1 if cells[i] != (i + 1) }
+
+    misplaced
   end
 end
 class AIPlayer
@@ -66,8 +83,8 @@ end
 class Game
   def initialize(player)
     @board = Board.new [[1,2,3],
-    [4,5,6],
-    [" ",7,8]]
+                        [4,5,6],
+                        [" ",7,8]]
     #@board = Board.new
     @player = player
   end
@@ -123,6 +140,7 @@ end
 #puts e.message
 #end
 
-game = Game.new(HumanPlayer.new)
+#game = Game.new(HumanPlayer.new)
 #game = Game.new(AIPlayer.new(BFSSearch.new))
+game = Game.new(AIPlayer.new(ASearch.new))
 game.play
