@@ -1,7 +1,11 @@
-task default: %w[play]
-
-task :play do
-  sh "ruby -I . -w game.rb"
+task :astar do
+  sh "ruby -I . -w game.rb astar"
+end
+task :human do
+  sh "ruby -I . -w game.rb human"
+end
+task :bfs do
+  sh "ruby -I . -w game.rb bfs"
 end
 
 task :test do

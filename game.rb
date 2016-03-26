@@ -57,6 +57,10 @@ class BFSSearch
     end
     return { state: state, movements: @counter }
   end
+
+  def to_s
+    "Breadth-First Search Algorithm"
+  end
 end
 class ASearch < BFSSearch
   def generate_succesors(state)
@@ -70,6 +74,10 @@ class ASearch < BFSSearch
 
     misplaced
   end
+
+  def to_s
+    "A* Algorithm (Heuristic: misplaced cells)"
+  end
 end
 class AIPlayer
   def initialize(algorithm)
@@ -77,6 +85,9 @@ class AIPlayer
   end
   def play(board)
     @ai.search(board)
+  end
+  def to_s
+    @ai.to_s
   end
 end
 
@@ -133,14 +144,22 @@ class Game
        \/                        \/      \/         \/
     )
     puts header
+    print_player
+  end
+  def print_player
+    puts "< Using as player: #{@player} >"
   end
 end
-#begin
-#rescue StandardError => e
-#puts e.message
-#end
 
-#game = Game.new(HumanPlayer.new)
-#game = Game.new(AIPlayer.new(BFSSearch.new))
-game = Game.new(AIPlayer.new(ASearch.new))
+modes = %w[human bfs astar]
+unless ARGV[0] || modes.index(ARGV[0])
+  puts "Usage: rake < human | bfs | astar >"
+  exit
+end
+
+game = case ARGV[0]
+       when "human" then Game.new(HumanPlayer.new)
+       when "bfs"   then Game.new(AIPlayer.new(BFSSearch.new))
+       when "astar" then Game.new(AIPlayer.new(ASearch.new))
+       end
 game.play
